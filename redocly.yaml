@@ -1,0 +1,12 @@
+apis:
+  main:
+    root: openapi.yaml
+
+extends:
+  - recommended
+
+rules:
+  no-unused-components: warn
+  operation-summary: error
+  operation-description: warn
+  tag-description: warn

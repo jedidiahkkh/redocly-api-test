@@ -1,0 +1,25 @@
+{
+  "name": "redocly-api-docs",
+  "version": "1.0.0",
+  "description": "API documentation using Redocly with simpleObject schema",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "redocly build-docs openapi.yaml",
+    "serve": "redocly preview openapi.yaml",
+    "lint": "redocly lint openapi.yaml",
+    "validate": "redocly lint openapi.yaml --strict",
+    "bundle": "redocly bundle openapi.yaml --output dist/openapi.yaml",
+    "start": "yarn serve"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^2.1.4"
+  },
+  "keywords": [
+    "api",
+    "documentation",
+    "openapi",
+    "redocly",
+    "swagger"
+  ]
+}

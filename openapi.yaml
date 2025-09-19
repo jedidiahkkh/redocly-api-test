@@ -1,0 +1,118 @@
+openapi: 3.1.0
+info:
+  title: API Documentation
+  description: API documentation with endpoints and webhooks using simpleObject schema
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.mycompany.com
+    description: Production server
+  - url: https://staging.api.mycompany.com
+    description: Staging server
+
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    # Global schema object that will be used across all endpoints
+    simpleObject:
+      type: object
+      properties:
+        readOnly:
+          type: string
+          readOnly: true
+          description: A read-only string field
+          example: "This field is read-only"
+        writeOnly:
+          type: string
+          writeOnly: true
+          description: A write-only string field
+          example: "This field is write-only"
+      required:
+        - readOnly
+        - writeOnly
+
+paths:
+  /api/data:
+    post:
+      summary: Create data entry
+      description: Creates a new data entry in the system
+      operationId: createDataEntry
+      tags:
+        - Data API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/simpleObject'
+      responses:
+        '200':
+          description: Data entry created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/simpleObject'
+        '400':
+          description: Bad request - invalid data provided
+        '500':
+          description: Internal server error
+      callbacks:
+        dataProcessed:
+          '{$request.body#/callbackUrl}':
+            post:
+              summary: Data processing callback
+              description: Called when the data entry has been processed
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/simpleObject'
+              responses:
+                '200':
+                  description: Callback acknowledged
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/simpleObject'
+                '400':
+                  description: Callback failed - invalid data
+
+webhooks:
+  dataUpdated:
+    post:
+      summary: Data updated webhook
+      description: Webhook triggered when data is updated in the system
+      operationId: dataUpdatedWebhook
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/simpleObject'
+      responses:
+        '200':
+          description: Webhook received and processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/simpleObject'
+        '400':
+          description: Bad request - invalid webhook payload
+        '500':
+          description: Internal server error processing webhook
